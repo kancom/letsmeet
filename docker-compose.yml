@@ -1,0 +1,84 @@
+version: '3.5'
+
+x-log-rotation: &log-rotation
+  options:
+    max-size: "200k"
+    max-file: "3"
+
+x-lmeet-environment: &lmeet-environment
+  PYTHONUNBUFFERED: 1
+  SECRET_KEY: 4oxkywz8i547jt6xk38gc4ifd5khbn3ueat2z8
+  DB_HOST: lmeet-db
+  DB_NAME: lmeet_db
+  DB_USER: lmeet_user
+  DB_PASSWORD: tridect
+
+x-nginx-common: &nginx-common
+  image: nginx:1.15
+  volumes:
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    - ./nginx/.htpasswd:/etc/nginx/.htpasswd
+    - ./nginx/website.template:/etc/nginx/website.template
+  command: /bin/bash -c "envsubst < /etc/nginx/website.template > /etc/nginx/conf.d/website.conf && exec nginx -g 'daemon off;'"
+
+services:
+
+  lmeet-nginx:
+    <<: *nginx-common
+    ports:
+      - 8181:80
+    networks:
+      - lmeet-net
+    depends_on:
+      - letsmeet-app
+    restart: on-failure
+    environment:
+      - NGINX_SERVER_NAME=lmeet-nginx
+      - WEBSITE_PROXY_NAME=letsmeet-app
+      - WEBSITE_PROXY_PORT=8000
+
+  lmeet-db:
+    # https://hub.docker.com/r/mdillon/postgis/
+    image: mdillon/postgis
+    ports:
+      - "8088:5432"
+    volumes:
+      - lmeet-db-volume:/var/lib/postgresql/data
+    networks:
+      - lmeet-net
+    restart: on-failure
+    environment:
+      POSTGRES_USER: lmeet_user
+      POSTGRES_PASSWORD: tridect
+      POSTGRES_DB: lmeet_db
+
+  letsmeet-app:
+    image: registry.gitlab.com/kancom/letsmeet:latest
+    ports:
+      - 8188:80
+    depends_on:
+      - lmeet-db
+    networks:
+      - lmeet-net
+    restart: on-failure
+    environment:
+      <<: *lmeet-environment
+      PYTHONUNBUFFERED: 1
+      ALLOWED_HOSTS: 'lmeet-nginx'
+      SETTINGS_MODULE: "settings.lmeet_prod"
+    command:
+      gunicorn
+        --workers 2
+        --threads 10
+        --bind 0.0.0.0:8000
+        --timeout 60
+        --access-logfile -
+        wsgi:application
+    logging:
+      <<: *log-rotation
+
+volumes:
+  lmeet-db-volume:
+
+networks:
+  lmeet-net:

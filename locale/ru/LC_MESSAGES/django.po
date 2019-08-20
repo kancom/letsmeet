@@ -1,0 +1,117 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-20 11:28+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: letsmeet/settings/settings.py:140
+msgid "English"
+msgstr "Английский"
+
+#: letsmeet/settings/settings.py:141
+msgid "Russian"
+msgstr "Русский"
+
+#: meetpage/models.py:8
+msgid "Name"
+msgstr "Название"
+
+#: meetpage/models.py:9
+msgid "Name your appointment"
+msgstr "Название встречи"
+
+#: meetpage/models.py:11
+msgid "Description"
+msgstr "Описание"
+
+#: meetpage/models.py:13
+msgid "Enter necessary details about your appointment"
+msgstr "Введите детали вашей встречи"
+
+#: meetpage/models.py:15
+msgid "Date and time"
+msgstr "Дата и время"
+
+#: meetpage/models.py:16
+msgid "Date and time of the appointment"
+msgstr "Дата и время вашей встречи"
+
+#: meetpage/models.py:17
+msgid "Place"
+msgstr "Место"
+
+#: meetpage/models.py:18
+msgid "Place where meet"
+msgstr "Место встречи"
+
+#: meetpage/templates/google-point-field-widget.html:8
+msgid "Coordinates"
+msgstr ""
+
+#: meetpage/templates/google-point-field-widget.html:11
+msgid "Latitude:"
+msgstr ""
+
+#: meetpage/templates/google-point-field-widget.html:12
+msgid "Ex: 41.015137"
+msgstr ""
+
+#: meetpage/templates/google-point-field-widget.html:15
+msgid "Longitude:"
+msgstr ""
+
+#: meetpage/templates/google-point-field-widget.html:16
+msgid "Ex: 28.979530"
+msgstr ""
+
+#: meetpage/templates/google-point-field-widget.html:18
+msgid "Done"
+msgstr "Готово"
+
+#: meetpage/templates/google-point-field-widget.html:22
+msgid "Use My Location"
+msgstr "Там где я"
+
+#: meetpage/templates/google-point-field-widget.html:23
+msgid "Place marker"
+msgstr "Поместить маркер"
+
+#: meetpage/templates/google-point-field-widget.html:25
+msgid "Enter or update the address here"
+msgstr "Введите адрес"
+
+#: meetpage/views.py:90
+msgid "Short description"
+msgstr "Короткое описание"
+
+#: meetpage/views.py:92
+msgid "When and where?"
+msgstr "Где и когда?"
+
+#: meetpage/views.py:115
+msgid "Save changes"
+msgstr "Сохранить"
+
+#: meetpage/views.py:117
+msgid "Copy to clipboard"
+msgstr "Скопировать адрес"
+
+#: meetpage/views.py:119
+msgid "Share via"
+msgstr "Поделиться"
