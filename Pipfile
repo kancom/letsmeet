@@ -15,12 +15,14 @@ pylint = "*"
 yapf = "*"
 
 [packages]
-django = "*"
+django = " >=2.2.4"
 django-map-widgets = "*"
 dj-static = "*"
 psycopg2-binary = "*"
 django-crispy-forms = "*"
 python-dateutil = "*"
+gunicorn = "*"
+django-tempus-dominus = "*"
 
 [requires]
 python_version = "3.7"

@@ -1,4 +1,4 @@
-FROM python:3.7.4-alpine3.9
+FROM python:3.7.4
 
 LABEL maintainer="kashirinas@rambler.ru"
 LABEL vendor="letsmeet"
@@ -20,19 +20,34 @@ ENV DJANGO_ENV=${DJANGO_ENV} \
 
 # System deps:
 
-RUN apk --no-cache add \
-     bash \
-     build-base \
-     curl \
-     gcc \
-     gettext \
-     # git \
-     # libffi-dev \
-     # linux-headers \
-     # musl-dev \
-     postgresql-dev \
-     tini
+RUN set -ex \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        binutils libproj-dev gdal-bin \
+        # git \
+        # openssh-client \
+        libpq-dev \
+        build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
+# RUN apk --no-cache add \
+#      bash \
+#      build-base \
+#      curl \
+#      gcc \
+#      gettext \
+#      # git \
+#      # libffi-dev \
+#      # linux-headers \
+#      # musl-dev \
+#      postgresql-dev \
+#      tini
+
+# RUN apk --no-cache add \
+#     --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+#     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+#       gdal \
+#       py-gdal
 
 # Creating folders, and files for a project:
 
@@ -49,4 +64,4 @@ RUN chmod +x "/docker-entrypoint.sh" \
   && pip install pipenv \
   && pipenv install $(test "$DJANGO_ENV" == production || echo "--dev") --deploy --system --ignore-pipfile
 
-ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "--", "/docker-entrypoint.sh"]

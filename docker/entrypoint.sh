@@ -7,7 +7,7 @@ cmd="$*"
 
 postgres_ready () {
   # Check that postgres is up and running on port `5432`:
-  sh "/code/docker/wait-for-command.sh" -t 5 -s 0 52 -c "curl db:5432"
+  sh "/code/docker/wait-for-command.sh" -t 5 -s 0 52 -c "curl lmeet-db:5432"
 }
 
 until postgres_ready; do

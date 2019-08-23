@@ -82,6 +82,14 @@ WSGI_APPLICATION = 'letsmeet.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'HOST': 'lmeet-db',
+        'NAME': 'lmeet_db',
+        'USER': 'lmeet_user',
+        'PORT': 5432,
+        'PASSWORD': 'tridect'
+    },
+    'lite': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
