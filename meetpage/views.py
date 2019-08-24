@@ -106,8 +106,8 @@ class DetailForm(forms.ModelForm):
                 _('Share via'),
                 Div(id='sharevia',
                     css_class='ya-share2 ',
-                    data_service="vkontakte,facebook,viber,whatsapp,telegram"))
-        )
+                    data_services="vkontakte,facebook,viber,whatsapp,telegram")
+            ))
 
 
 class AppointmentUpdate(UpdateView):

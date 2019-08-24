@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-20 11:28+0300\n"
+"POT-Creation-Date: 2019-08-24 22:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,11 +20,11 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: letsmeet/settings/settings.py:140
+#: letsmeet/settings/settings.py:148
 msgid "English"
 msgstr "Английский"
 
-#: letsmeet/settings/settings.py:141
+#: letsmeet/settings/settings.py:149
 msgid "Russian"
 msgstr "Русский"
 
@@ -44,11 +44,11 @@ msgstr "Описание"
 msgid "Enter necessary details about your appointment"
 msgstr "Введите детали вашей встречи"
 
-#: meetpage/models.py:15
+#: meetpage/models.py:15 meetpage/views.py:27
 msgid "Date and time"
 msgstr "Дата и время"
 
-#: meetpage/models.py:16
+#: meetpage/models.py:16 meetpage/views.py:28
 msgid "Date and time of the appointment"
 msgstr "Дата и время вашей встречи"
 
@@ -59,6 +59,14 @@ msgstr "Место"
 #: meetpage/models.py:18
 msgid "Place where meet"
 msgstr "Место встречи"
+
+#: meetpage/templates/appointment_details.html:26
+msgid "Create your appointment here"
+msgstr "Создайте вашу встречу здесь"
+
+#: meetpage/templates/appointment_details.html:28
+msgid "Fill details below, save and share..."
+msgstr "Введите детали ниже, сохраните и поделитесь..."
 
 #: meetpage/templates/google-point-field-widget.html:8
 msgid "Coordinates"
@@ -96,22 +104,22 @@ msgstr "Поместить маркер"
 msgid "Enter or update the address here"
 msgstr "Введите адрес"
 
-#: meetpage/views.py:90
+#: meetpage/views.py:77
 msgid "Short description"
 msgstr "Короткое описание"
 
-#: meetpage/views.py:92
+#: meetpage/views.py:79
 msgid "When and where?"
 msgstr "Где и когда?"
 
-#: meetpage/views.py:115
+#: meetpage/views.py:102
 msgid "Save changes"
 msgstr "Сохранить"
 
-#: meetpage/views.py:117
+#: meetpage/views.py:104
 msgid "Copy to clipboard"
 msgstr "Скопировать адрес"
 
-#: meetpage/views.py:119
+#: meetpage/views.py:106
 msgid "Share via"
 msgstr "Поделиться"
