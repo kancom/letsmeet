@@ -1,5 +1,9 @@
 version: '3.5'
 
+x-access-from-traefik: &access-from-traefik
+  traefik.enable: True
+  traefik.docker.network: cloud_private
+
 x-log-rotation: &log-rotation
   options:
     max-size: "200k"
@@ -22,12 +26,60 @@ x-nginx-common: &nginx-common
   command: /bin/bash -c "envsubst < /etc/nginx/website.template > /etc/nginx/conf.d/website.conf && exec nginx -g 'daemon off;'"
 
 services:
+  api_gw:
+    image: traefik:v1.7.16
+    networks:
+      - cloud_private
+    restart: always
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    logging:
+      <<: *log-rotation
+
+  cad-db:
+    image: mysql:5.7
+    volumes:
+      - cad-db-volume:/var/lib/mysql
+    networks:
+      - cad_net
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    logging:
+      <<: *log-rotation
+
+  cad-wp:
+    depends_on:
+      - cad-db
+    image: wordpress:latest
+    networks:
+      - cloud_private
+      - cad_net
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: cad-db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    labels:
+      <<: *access-from-traefik
+      traefik.authenticated.frontend.rule: "PathPrefix: /"
+    logging:
+      <<: *log-rotation
 
   lmeet-nginx:
     <<: *nginx-common
     ports:
       - 80:80
     networks:
+      - cloud_private
       - lmeet-net
     depends_on:
       - letsmeet-app
@@ -36,6 +88,11 @@ services:
       - NGINX_SERVER_NAME=lmeet-nginx
       - WEBSITE_PROXY_NAME=letsmeet-app
       - WEBSITE_PROXY_PORT=8000
+    labels:
+      <<: *access-from-traefik
+      traefik.authenticated.frontend.rule: "PathPrefix: /lmeet"
+    logging:
+      <<: *log-rotation
 
   lmeet-db:
     # https://hub.docker.com/r/mdillon/postgis/
@@ -51,6 +108,24 @@ services:
       POSTGRES_USER: lmeet_user
       POSTGRES_PASSWORD: tridect
       POSTGRES_DB: lmeet_db
+    logging:
+      <<: *log-rotation
+
+  letsmeet-migrations:
+    image: registry.gitlab.com/kancom/letsmeet:latest
+    networks:
+      - lmeet-net
+    depends_on:
+      - lmeet-db
+    restart: on-failure
+    environment:
+      <<: *lmeet-environment
+      DJANGO_SETTINGS_MODULE: "letsmeet.settings.lmeet_dev"
+    command:
+      python
+        manage.py
+        migrate
+        --noinput
 
   letsmeet-app:
     image: registry.gitlab.com/kancom/letsmeet:latest
@@ -77,8 +152,17 @@ services:
     logging:
       <<: *log-rotation
 
+  test:
+    image: registry.gitlab.com/kancom/letsmeet:latest
+    command: python manage.py test
+    restart: "no"
+
+
 volumes:
   lmeet-db-volume:
+  cad-db-volume:
 
 networks:
   lmeet-net:
+  cad_net:
+  close_private:

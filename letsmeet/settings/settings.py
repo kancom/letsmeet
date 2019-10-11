@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import sys
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -21,12 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '1ie6q=gr4c%xvytih@4xfag%&d(s@v3(7w3bab621ik3_rw@07'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY') or sys.exit(
+    'SECRET_KEY environment variable is not set.')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", [""]).split(",")
 
 # Application definition
 
@@ -87,7 +89,7 @@ DATABASES = {
         'NAME': 'lmeet_db',
         'USER': 'lmeet_user',
         'PORT': 5432,
-        'PASSWORD': 'tridect'
+        'PASSWORD': os.getenv('DJANGO_DB_PASSWORD')
     },
     'lite': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -148,3 +150,13 @@ LANGUAGES = (
     ('en', _('English')),
     ('ru', _('Russian')),
 )
+
+MAP_WIDGETS = {
+    "GooglePointFieldWidget": (
+        ("zoom", 15),
+        ("mapCenterLocationName", "moscow, ru"),
+        ("markerFitZoom", 12),
+    ),
+    "GOOGLE_MAP_API_KEY":
+    os.getenv('DJANGO_GOOGLE_KEY')
+}

@@ -20,8 +20,8 @@ from django.urls import path
 from meetpage.views import AppointmentCreate, AppointmentUpdate
 
 urlpatterns = i18n_patterns(
-    path('admin/', admin.site.urls),
-    path('<slug:apnt_id>/',
+    path('/lmeet/admin/', admin.site.urls),
+    path('/lmeet/<slug:apnt_id>/',
          AppointmentUpdate.as_view(),
          name='appointment_details'),
-    path('', AppointmentCreate.as_view(), name='home'))
+    path('/lmeet', AppointmentCreate.as_view(), name='home'))
