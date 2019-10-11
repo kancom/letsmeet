@@ -26,17 +26,17 @@ x-nginx-common: &nginx-common
   command: /bin/bash -c "envsubst < /etc/nginx/website.template > /etc/nginx/conf.d/website.conf && exec nginx -g 'daemon off;'"
 
 services:
-  api_gw:
-    image: traefik:v1.7.16
-    networks:
-      - cloud_private
-    restart: always
-    ports:
-      - "80:80"
-      - "8080:8080"
-      - "443:443"
-    logging:
-      <<: *log-rotation
+  # api_gw:
+  #   image: traefik:v1.7.16
+  #   networks:
+  #     - cloud_private
+  #   restart: always
+  #   ports:
+  #     - "80:80"
+  #     - "8080:8080"
+  #     - "443:443"
+  #   logging:
+  #     <<: *log-rotation
 
   cad-db:
     image: mysql:5.7
@@ -61,7 +61,8 @@ services:
       - cloud_private
       - cad_net
     ports:
-      - "8000:80"
+      - "80:80"
+      - "443:443"
     restart: always
     environment:
       WORDPRESS_DB_HOST: cad-db:3306
@@ -74,88 +75,88 @@ services:
     logging:
       <<: *log-rotation
 
-  lmeet-nginx:
-    <<: *nginx-common
-    ports:
-      - 80:80
-    networks:
-      - cloud_private
-      - lmeet-net
-    depends_on:
-      - letsmeet-app
-    restart: on-failure
-    environment:
-      - NGINX_SERVER_NAME=lmeet-nginx
-      - WEBSITE_PROXY_NAME=letsmeet-app
-      - WEBSITE_PROXY_PORT=8000
-    labels:
-      <<: *access-from-traefik
-      traefik.authenticated.frontend.rule: "PathPrefix: /lmeet"
-    logging:
-      <<: *log-rotation
+  # lmeet-nginx:
+  #   <<: *nginx-common
+  #   ports:
+  #     - 80:80
+  #   networks:
+  #     - cloud_private
+  #     - lmeet-net
+  #   depends_on:
+  #     - letsmeet-app
+  #   restart: on-failure
+  #   environment:
+  #     - NGINX_SERVER_NAME=lmeet-nginx
+  #     - WEBSITE_PROXY_NAME=letsmeet-app
+  #     - WEBSITE_PROXY_PORT=8000
+  #   labels:
+  #     <<: *access-from-traefik
+  #     traefik.authenticated.frontend.rule: "PathPrefix: /lmeet"
+  #   logging:
+  #     <<: *log-rotation
 
-  lmeet-db:
-    # https://hub.docker.com/r/mdillon/postgis/
-    image: mdillon/postgis
-    ports:
-      - "8088:5432"
-    volumes:
-      - lmeet-db-volume:/var/lib/postgresql/data
-    networks:
-      - lmeet-net
-    restart: on-failure
-    environment:
-      POSTGRES_USER: lmeet_user
-      POSTGRES_PASSWORD: tridect
-      POSTGRES_DB: lmeet_db
-    logging:
-      <<: *log-rotation
+  # lmeet-db:
+  #   # https://hub.docker.com/r/mdillon/postgis/
+  #   image: mdillon/postgis
+  #   ports:
+  #     - "8088:5432"
+  #   volumes:
+  #     - lmeet-db-volume:/var/lib/postgresql/data
+  #   networks:
+  #     - lmeet-net
+  #   restart: on-failure
+  #   environment:
+  #     POSTGRES_USER: lmeet_user
+  #     POSTGRES_PASSWORD: tridect
+  #     POSTGRES_DB: lmeet_db
+  #   logging:
+  #     <<: *log-rotation
 
-  letsmeet-migrations:
-    image: registry.gitlab.com/kancom/letsmeet:latest
-    networks:
-      - lmeet-net
-    depends_on:
-      - lmeet-db
-    restart: on-failure
-    environment:
-      <<: *lmeet-environment
-      DJANGO_SETTINGS_MODULE: "letsmeet.settings.lmeet_dev"
-    command:
-      python
-        manage.py
-        migrate
-        --noinput
+  # letsmeet-migrations:
+  #   image: registry.gitlab.com/kancom/letsmeet:latest
+  #   networks:
+  #     - lmeet-net
+  #   depends_on:
+  #     - lmeet-db
+  #   restart: on-failure
+  #   environment:
+  #     <<: *lmeet-environment
+  #     DJANGO_SETTINGS_MODULE: "letsmeet.settings.lmeet_dev"
+  #   command:
+  #     python
+  #       manage.py
+  #       migrate
+  #       --noinput
 
-  letsmeet-app:
-    image: registry.gitlab.com/kancom/letsmeet:latest
-    ports:
-      - 8188:80
-    depends_on:
-      - lmeet-db
-    networks:
-      - lmeet-net
-    restart: on-failure
-    environment:
-      <<: *lmeet-environment
-      PYTHONUNBUFFERED: 1
-      ALLOWED_HOSTS: 'lmeet-nginx'
-      DJANGO_SETTINGS_MODULE: "letsmeet.settings.lmeet_dev"
-    command:
-      gunicorn
-        --workers 2
-        --threads 10
-        --bind 0.0.0.0:8000
-        --timeout 60
-        --access-logfile -
-        letsmeet.wsgi:application
-    logging:
-      <<: *log-rotation
+  # letsmeet-app:
+  #   image: registry.gitlab.com/kancom/letsmeet:latest
+  #   ports:
+  #     - 8188:80
+  #   depends_on:
+  #     - lmeet-db
+  #   networks:
+  #     - lmeet-net
+  #   restart: on-failure
+  #   environment:
+  #     <<: *lmeet-environment
+  #     PYTHONUNBUFFERED: 1
+  #     ALLOWED_HOSTS: 'lmeet-nginx'
+  #     DJANGO_SETTINGS_MODULE: "letsmeet.settings.lmeet_dev"
+  #   command:
+  #     gunicorn
+  #       --workers 2
+  #       --threads 10
+  #       --bind 0.0.0.0:8000
+  #       --timeout 60
+  #       --access-logfile -
+  #       letsmeet.wsgi:application
+  #   logging:
+  #     <<: *log-rotation
 
-  test:
-    image: registry.gitlab.com/kancom/letsmeet:latest
-    command: python manage.py test
-    restart: "no"
+  # test:
+  #   image: registry.gitlab.com/kancom/letsmeet:latest
+  #   command: python manage.py test
+  #   restart: "no"
 
 
 volumes:
@@ -165,4 +166,4 @@ volumes:
 networks:
   lmeet-net:
   cad_net:
-  close_private:
+  cloud_private:
